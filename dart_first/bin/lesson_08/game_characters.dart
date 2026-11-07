@@ -9,6 +9,7 @@ enum SuperAbility {
   resurrect,
   protect,
   stun,
+  ludoman
 }
 
 abstract class GameCharacter {
@@ -238,6 +239,28 @@ class Thor extends Hero {
     if (RpgGame.random.nextBool()) {
       boss.isStunned = true;
       print('Thor $name stunned the boss!');
+    }
+  }
+}
+class Ludoman extends Hero {
+  Ludoman(String name, int health, int damage)
+      : super(name, health, damage, SuperAbility.ludoman);
+
+  @override
+  void applySuperPower(Boss boss, List<Hero> heroes) {
+    int dice1 = RpgGame.random.nextInt(6) + 1;
+    int dice2 = RpgGame.random.nextInt(6) + 1;
+
+    if (dice1 == dice2) {
+      boss.health -= dice1 * dice2;
+    } else {
+      List<Hero> teammates = heroes.where((h) => h != this).toList();
+
+      if (teammates.isNotEmpty) {
+        Hero randomHero =
+            teammates[RpgGame.random.nextInt(teammates.length)];
+        randomHero.health -= dice1 + dice2;
+      }
     }
   }
 }
